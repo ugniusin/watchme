@@ -1,0 +1,6 @@
+[submodule "watchme-frontend"]
+	path = watchme-frontend
+	url = https://github.com/ugniusin/watchme-frontend
+[submodule "watchme-backend"]
+	path = watchme-backend
+	url = https://github.com/ugniusin/watchme-backend

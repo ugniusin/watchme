@@ -1,0 +1,64 @@
+version: "3.7"
+
+services:
+
+  backend:
+    container_name: backend
+    build:
+      context: watchme-backend
+      dockerfile: Dockerfile
+    ports:
+      - 8090:8090
+    depends_on:
+      - mysql
+    networks:
+      - watchme_network
+    volumes:
+      - .:/go/src/github.com/ugniusin/watchme-backend
+    restart: on-failure
+    links:
+      - mysql
+
+  frontend:
+    container_name: frontend
+    build:
+      context: watchme-frontend
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3001:3000
+    environment:
+      - NODE_ENV=development
+    networks:
+      - watchme_network
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    restart: always
+    environment:
+      MYSQL_DATABASE: watchme
+      MYSQL_USER: root
+      MYSQL_PASSWORD: toor
+      MYSQL_ROOT_PASSWORD: toor
+    networks:
+      - watchme_network
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://mysql:3306"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  db_data:
+
+networks:
+  watchme_network:
